@@ -1,0 +1,58 @@
+{
+	"name": "valory-adaptor-alb",
+	"version": "0.0.0",
+	"main": "dist/albAdaptor.js",
+	"typings": "dist/albAdaptor.d.ts",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/aws-lambda": "^8.10.15",
+		"@types/node": "^10.12.12",
+		"tslint": "^5.11.0",
+		"typescript": "^3.2.1",
+		"valory-runtime": "^3.11.2",
+		"cz-conventional-changelog": "^2.1.0",
+		"husky": "^1.2.0",
+		"semantic-release": "^15.1.7",
+		"@commitlint/cli": "^7.0.0",
+		"@commitlint/config-conventional": "^7.0.1"
+	},
+	"peerDependencies": {
+		"valory-runtime": "^3.11.2"
+	},
+	"dependencies": {
+		"find-my-way": "^1.15.4"
+	},
+	"files": [
+		"dist/**/*.{js,d.ts}",
+		"package.json"
+	],
+	"scripts": {
+		"build": "tsc",
+		"prepare": "npm run build",
+		"release": "semantic-release",
+		"commitmsg": "commitlint -e $GIT_PARAMS"
+	},
+	"release": {
+		"repositoryUrl": "https://github.com/jfrconley/valory-adaptor-alb",
+		"branch": "master",
+		"verifyConditions": [
+			"@semantic-release/npm",
+			"@semantic-release/github"
+		],
+		"publish": [
+			"@semantic-release/npm",
+			"@semantic-release/github"
+		],
+		"success": [],
+		"fail": []
+	},
+	"config": {
+		"commitizen": {
+			"path": "./node_modules/cz-conventional-changelog"
+		}
+	},
+	"publishConfig": {
+		"registry": "https://registry.npmjs.org"
+	},
+	"repository": "https://github.com/jfrconley/valory-adaptor-alb"
+}
