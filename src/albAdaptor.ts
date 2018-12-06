@@ -1,7 +1,6 @@
 import FMW = require("find-my-way");
-import {Callback, Context} from "aws-lambda";
 import {ApiRequest, ApiResponse, ApiServer, HttpMethod, ValoryMetadata} from "valory-runtime";
-import {ALBRequestEvent, ALBResponse, FormattedRequest} from "./types/alb";
+import {ALBRequestEvent, ALBResponse, Callback, Context, FormattedRequest} from "./types/alb";
 import qs = require("querystring");
 
 const pathReplacer = /{([\S]*?)}/g;
