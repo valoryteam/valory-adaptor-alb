@@ -3,6 +3,7 @@ import {ApiRequest, ApiResponse, ApiServer, HttpMethod, ValoryMetadata} from "va
 import {ALBRequestEvent, ALBResponse, Callback, Context, FormattedRequest} from "./types/alb";
 import qs = require("querystring");
 
+const prefix = process.env.PATH_PREFIX;
 const pathReplacer = /{([\S]*?)}/g;
 const default404: ALBResponse = {
 	statusCode: 404,
@@ -72,7 +73,7 @@ export class ALBAdaptor implements ApiServer {
 			method: event.httpMethod,
 			isBase64Encoded: event.isBase64Encoded,
 			queryStringParameters: event.queryStringParameters,
-			url: event.path,
+			url: event.path.replace(prefix, ""),
 		};
 		this.router.lookup(formatted, cb);
 	}
