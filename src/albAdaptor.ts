@@ -83,7 +83,7 @@ function attemptParse(contentType: string, obj: any): any {
 	if (contentType == null) {
 		return obj;
 	}
-	const parsedContentType = contentType.split(":")[0];
+	const parsedContentType = contentType.split(";")[0];
 	try {
 		switch (parsedContentType) {
 			case "application/json":
