@@ -1,5 +1,5 @@
 import FMW = require("find-my-way");
-import {ApiRequest, ApiResponse, ApiServer, HttpMethod, ValoryMetadata} from "valory-runtime";
+import {ApiRequest, ApiResponse, HttpMethod, AttachmentRegistry, ApiAdaptor, ApiContext} from "valory-runtime";
 import {ALBRequestEvent, ALBResponse, Callback, Context, FormattedRequest} from "./types/alb";
 import qs = require("querystring");
 
@@ -14,8 +14,8 @@ const default404: ALBResponse = {
 	body: '{"message": "Not Found"}',
 };
 
-export class ALBAdaptor implements ApiServer {
-	public static LambdaContextKey = ApiRequest.createKey<Context>();
+export class ALBAdaptor implements ApiAdaptor {
+	public static LambdaContextKey = AttachmentRegistry.createKey<Context>();
 	public allowDocSite = true;
 	public disableSerialization = false;
 	public locallyRunnable = false;
@@ -25,37 +25,34 @@ export class ALBAdaptor implements ApiServer {
 		},
 	});
 
-	public register(path: string, method: HttpMethod, handler: (request: ApiRequest) => (Promise<ApiResponse>)) {
-		const route = `${path}:${method}`;
-		this.router.on(HttpMethod[method], path.replace(pathReplacer, ":$1"), (request, callback, params) => {
+	public register(path: string, method: HttpMethod, handler: (ctx: ApiContext) => Promise<ApiContext>) {
+		this.router.on(method, path.replace(pathReplacer, ":$1"), async (request, callback, params) => {
 			const content = (request.isBase64Encoded) ? Buffer.from("base64").toString() : request.body;
 			const parsed = attemptParse(request.headers["content-type"], content);
-			const tranRequest = new ApiRequest({
+			const tranRequest = new ApiContext({
 				headers: request.headers,
-				query: request.queryStringParameters,
-				path: params,
+				queryParams: request.queryStringParameters,
+				pathParams: params,
 				body: parsed,
 				rawBody: content,
-				formData: parsed as any,
-				route,
+				formData: parsed,
+				method,
+				path
 			});
-			tranRequest.putAttachment(ALBAdaptor.LambdaContextKey, request.context);
-			handler(tranRequest).then((response) => {
-				const resContentType = response.headers["Content-Type"] || "text/plain";
-				callback(null, {
-					isBase64Encoded: false,
-					body: serialize(resContentType, response.body),
-					headers: response.headers,
-					statusCode: response.statusCode,
-				});
+			tranRequest.attachments.putAttachment(ALBAdaptor.LambdaContextKey, request.context);
+			await handler(tranRequest);
+			callback(null, {
+				isBase64Encoded: false,
+				body: tranRequest.serializeResponse(),
+				headers: tranRequest.response.headers,
+				statusCode: tranRequest.response.statusCode,
 			});
 		});
 	}
 
-	public getExport(metadata: ValoryMetadata, options: any): { valory: ValoryMetadata } {
+	public start() {
 		// embed the lambda request handler in the export
 		return {
-			valory: metadata,
 			handler: this.handler.bind(this),
 		} as any;
 	}
@@ -95,15 +92,5 @@ function attemptParse(contentType: string, obj: any): any {
 		}
 	} catch (err) {
 		return obj;
-	}
-}
-
-function serialize(contentType: string, data: any): string {
-	if (data == null) {
-		return "";
-	} else if (typeof data !== "string") {
-		return JSON.stringify(data);
-	} else {
-		return data;
 	}
 }
