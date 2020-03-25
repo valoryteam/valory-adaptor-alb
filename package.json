@@ -1,6 +1,6 @@
 {
 	"name": "valory-adaptor-alb",
-	"version": "2.0.0-beta.1",
+	"version": "2.0.0-beta.2",
 	"main": "dist/albAdaptor.js",
 	"typings": "dist/albAdaptor.d.ts",
 	"license": "MIT",
