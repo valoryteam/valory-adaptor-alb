@@ -28,14 +28,11 @@ export class ALBAdaptor implements ApiAdaptor {
 	public register(path: string, method: HttpMethod, handler: (ctx: ApiContext) => Promise<ApiContext>) {
 		this.router.on(method, path.replace(pathReplacer, ":$1"), async (request, callback, params) => {
 			const content = (request.isBase64Encoded) ? Buffer.from("base64").toString() : request.body;
-			const parsed = attemptParse(request.headers["content-type"], content);
 			const tranRequest = new ApiContext({
 				headers: request.headers,
 				queryParams: request.queryStringParameters,
 				pathParams: params,
-				body: parsed,
 				rawBody: content,
-				formData: parsed,
 				method,
 				path
 			});
@@ -73,24 +70,5 @@ export class ALBAdaptor implements ApiAdaptor {
 			url: event.path.replace(prefix, ""),
 		};
 		this.router.lookup(formatted, cb);
-	}
-}
-
-function attemptParse(contentType: string, obj: any): any {
-	if (contentType == null) {
-		return obj;
-	}
-	const parsedContentType = contentType.split(";")[0];
-	try {
-		switch (parsedContentType) {
-			case "application/json":
-				return JSON.parse(obj);
-			case "application/x-www-form-urlencoded":
-				return qs.parse(obj);
-			default:
-				return obj;
-		}
-	} catch (err) {
-		return obj;
 	}
 }
