@@ -41,7 +41,7 @@ export class ALBAdaptor implements ApiAdaptor {
 			callback(null, {
 				isBase64Encoded: false,
 				body: tranRequest.serializeResponse(),
-				headers: tranRequest.response.headers,
+				headers: tranRequest.prepareHeaders(),
 				statusCode: tranRequest.response.statusCode,
 			});
 		});

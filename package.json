@@ -14,7 +14,7 @@
 		"semantic-release": "^16.0.4",
 		"tslint": "^6.1.0",
 		"typescript": "^3.8.3",
-		"valory-runtime": "^4.0.0-v4.5"
+		"valory-runtime": "^4.0.0-v4.14"
 	},
 	"peerDependencies": {
 		"valory-runtime": "^4.0.0-v4.5"
