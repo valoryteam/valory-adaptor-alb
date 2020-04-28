@@ -14,6 +14,10 @@ const default404: ALBResponse = {
 	body: '{"message": "Not Found"}',
 };
 
+function noop<T>(x: T) {
+	return x
+}
+
 export class ALBAdaptor implements ApiAdaptor {
 	public static LambdaContextKey = AttachmentRegistry.createKey<Context>();
 	public allowDocSite = true;
@@ -33,7 +37,7 @@ export class ALBAdaptor implements ApiAdaptor {
 				pathParams: params,
 				rawBody: content,
 				method,
-				url: `${request.url}?${qs.stringify(request.queryStringParameters)}`
+				url: `${request.url}?${qs.stringify(request.queryStringParameters, null, null, {encodeURIComponent: noop})}`
 			});
 			tranRequest.attachments.putAttachment(ALBAdaptor.LambdaContextKey, request.context);
 			await handler(tranRequest);
