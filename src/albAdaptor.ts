@@ -30,11 +30,10 @@ export class ALBAdaptor implements ApiAdaptor {
 			const content = (request.isBase64Encoded) ? Buffer.from("base64").toString() : request.body;
 			const tranRequest = new ApiContext({
 				headers: request.headers,
-				queryParams: request.queryStringParameters,
 				pathParams: params,
 				rawBody: content,
 				method,
-				path
+				url: `${request.url}?${qs.stringify(request.queryStringParameters)}`
 			});
 			tranRequest.attachments.putAttachment(ALBAdaptor.LambdaContextKey, request.context);
 			await handler(tranRequest);
