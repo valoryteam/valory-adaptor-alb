@@ -20,9 +20,6 @@ function noop<T>(x: T) {
 
 export class ALBAdaptor implements ApiAdaptor {
 	public static LambdaContextKey = AttachmentRegistry.createKey<Context>();
-	public allowDocSite = true;
-	public disableSerialization = false;
-	public locallyRunnable = false;
 	private router = FMW<FormattedRequest, Callback<ALBResponse>>({
 		defaultRoute: (request, cb) => {
 			cb(null, default404);
