@@ -28,7 +28,7 @@ export class ALBAdaptor implements ApiAdaptor {
 
 	public register(path: string, method: HttpMethod, handler: (ctx: ApiContext) => Promise<ApiContext>) {
 		this.router.on(method, path.replace(pathReplacer, ":$1"), async (request, callback, params) => {
-			const content = (request.isBase64Encoded) ? Buffer.from("base64").toString() : request.body;
+			const content = (request.isBase64Encoded) ? Buffer.from(request.body, "base64").toString() : request.body;
 			const tranRequest = new ApiContext({
 				headers: request.headers,
 				pathParams: params,
