@@ -19,6 +19,7 @@ function noop<T>(x: T) {
 }
 
 export class ALBAdaptor implements ApiAdaptor {
+	public static Base64EncodedKey = AttachmentRegistry.createKey<boolean>();
 	public static LambdaContextKey = AttachmentRegistry.createKey<Context>();
 	private router = FMW<FormattedRequest, Callback<ALBResponse>>({
 		defaultRoute: (request, cb) => {
@@ -28,15 +29,15 @@ export class ALBAdaptor implements ApiAdaptor {
 
 	public register(path: string, method: HttpMethod, handler: (ctx: ApiContext) => Promise<ApiContext>) {
 		this.router.on(method, path.replace(pathReplacer, ":$1"), async (request, callback, params) => {
-			const content = (request.isBase64Encoded) ? Buffer.from(request.body, "base64").toString() : request.body;
 			const tranRequest = new ApiContext({
 				headers: request.headers,
 				pathParams: params,
-				rawBody: content,
+				rawBody: request.body,
 				method,
 				path,
 				query: qs.stringify(request.queryStringParameters, null, null, {encodeURIComponent: noop})
 			});
+			tranRequest.attachments.putAttachment(ALBAdaptor.Base64EncodedKey, request.isBase64Encoded);
 			tranRequest.attachments.putAttachment(ALBAdaptor.LambdaContextKey, request.context);
 			await handler(tranRequest);
 			callback(null, {
