@@ -35,7 +35,8 @@ export class ALBAdaptor implements ApiAdaptor {
 				rawBody: request.body,
 				method,
 				path,
-				query: qs.stringify(request.queryStringParameters, null, null, {encodeURIComponent: noop})
+				query: qs.stringify(request.queryStringParameters, null, null, {encodeURIComponent: noop}),
+				requestId: request.context.awsRequestId
 			});
 			tranRequest.attachments.putAttachment(ALBAdaptor.Base64EncodedKey, request.isBase64Encoded);
 			tranRequest.attachments.putAttachment(ALBAdaptor.LambdaContextKey, request.context);
