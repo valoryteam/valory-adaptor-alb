@@ -20,6 +20,7 @@ function noop<T>(x: T) {
 
 export class ALBAdaptor implements ApiAdaptor {
 	public static Base64EncodedKey = AttachmentRegistry.createKey<boolean>();
+	public static Base64EncodeResponseKey = AttachmentRegistry.createKey<boolean>()
 	public static LambdaContextKey = AttachmentRegistry.createKey<Context>();
 	private router = FMW<FormattedRequest, Callback<ALBResponse>>({
 		defaultRoute: (request, cb) => {
@@ -41,9 +42,10 @@ export class ALBAdaptor implements ApiAdaptor {
 			tranRequest.attachments.putAttachment(ALBAdaptor.Base64EncodedKey, request.isBase64Encoded);
 			tranRequest.attachments.putAttachment(ALBAdaptor.LambdaContextKey, request.context);
 			await handler(tranRequest);
+			const base64EncodeResponse = tranRequest.attachments.getAttachment(ALBAdaptor.Base64EncodeResponseKey) || false;
 			callback(null, {
-				isBase64Encoded: false,
-				body: tranRequest.serializeResponse(),
+				isBase64Encoded: base64EncodeResponse,
+				body: (base64EncodeResponse) ? Buffer.from(tranRequest.serializeResponse()).toString("base64") : tranRequest.serializeResponse(),
 				headers: tranRequest.prepareHeaders(),
 				statusCode: tranRequest.response.statusCode,
 			});
