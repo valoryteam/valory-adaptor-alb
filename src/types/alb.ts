@@ -32,7 +32,7 @@ export interface ALBResponse {
 	statusDescription?: string;
 	isBase64Encoded: boolean;
 	headers?: {[key: string]: string};
-	body?: string;
+	body?: string | Buffer;
 }
 
 export interface Context {

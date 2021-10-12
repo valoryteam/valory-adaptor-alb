@@ -14,10 +14,10 @@
 		"semantic-release": "^16.0.4",
 		"tslint": "^6.1.0",
 		"typescript": "^3.8.3",
-		"valory-runtime": "^4.0.0-v4.28"
+		"valory-runtime": "^4.0.0-v4.59"
 	},
 	"peerDependencies": {
-		"valory-runtime": "^4.0.0-v4.5"
+		"valory-runtime": "^4.0.0-v4.59"
 	},
 	"dependencies": {
 		"find-my-way": "^2.2.2"

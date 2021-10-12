@@ -5673,10 +5673,10 @@ validate-npm-package-name@^3.0.0, validate-npm-package-name@~3.0.0:
   dependencies:
     builtins "^1.0.3"
 
-valory-runtime@^4.0.0-v4.28:
-  version "4.0.0-v4.28"
-  resolved "https://registry.yarnpkg.com/valory-runtime/-/valory-runtime-4.0.0-v4.28.tgz#732f20428790f99bbdbc8f065ce324b8fc95c051"
-  integrity sha512-gnVNgGE7IHcTDt3Z/BVOgVLpFEAXp2ta3ZegAC2wq9wxhe7sDPHLVJHn5MLpanZeRjMYVjMFqrO2zuQRy39eGQ==
+valory-runtime@^4.0.0-v4.59:
+  version "4.0.0-v4.59"
+  resolved "https://registry.yarnpkg.com/valory-runtime/-/valory-runtime-4.0.0-v4.59.tgz#107706b37f3e8784fbe99e37236ce3770b9af2c6"
+  integrity sha512-mj7ugFXCFa2mnAStSICwK/FKVSvnRBPcem7Glq7V2nDZtshgQvzmkw7fbip2EBPw7QEz5kINXjP76GoQarl9dA==
   dependencies:
     "@types/pino" "^6.0.0"
     openapi-types "^1.3.5"

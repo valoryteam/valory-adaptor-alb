@@ -43,10 +43,18 @@ export class ALBAdaptor implements ApiAdaptor {
 			tranRequest.attachments.putAttachment(ALBAdaptor.LambdaContextKey, request.context);
 			await handler(tranRequest);
 			const base64EncodeResponse = tranRequest.attachments.getAttachment(ALBAdaptor.Base64EncodeResponseKey) || false;
+			const headers = tranRequest.prepareHeaders();
+
+			/**
+			 * 	ALB will reject the request if the content-length does not match the response we return, which is the case
+			 * 	when returning base64 content
+			 */
+			delete headers['content-length'];
+
 			callback(null, {
 				isBase64Encoded: base64EncodeResponse,
 				body: (base64EncodeResponse) ? Buffer.from(tranRequest.serializeResponse()).toString("base64") : tranRequest.serializeResponse(),
-				headers: tranRequest.prepareHeaders(),
+				headers,
 				statusCode: tranRequest.response.statusCode,
 			});
 		});
